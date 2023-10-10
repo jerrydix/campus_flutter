@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:campus_flutter/base/enums/appearance.dart';
+import 'package:campus_flutter/base/services/compatability_service.dart';
 import 'package:campus_flutter/providers_get_it.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,17 +25,19 @@ class UserPreferencesViewModel {
           final failedGrades = data != null ? data as bool : false;
           ref.read(hideFailedGrades.notifier).state = failedGrades;
         case UserPreference.defaultMapsApplication:
-          final installedMaps = await MapLauncher.installedMaps;
-          if (data != null && data is String) {
-            final matchingMaps =
-                installedMaps.firstWhereOrNull((e) => e.mapType.name == data);
-            if (matchingMaps != null) {
-              ref.read(selectedMapsApp.notifier).state = matchingMaps;
+          if (getIt<CompatabilityService>().isMobile) {
+            final installedMaps = await MapLauncher.installedMaps;
+            if (data != null && data is String) {
+              final matchingMaps =
+                  installedMaps.firstWhereOrNull((e) => e.mapType.name == data);
+              if (matchingMaps != null) {
+                ref.read(selectedMapsApp.notifier).state = matchingMaps;
+              } else {
+                ref.read(selectedMapsApp.notifier).state = installedMaps.first;
+              }
             } else {
               ref.read(selectedMapsApp.notifier).state = installedMaps.first;
             }
-          } else {
-            ref.read(selectedMapsApp.notifier).state = installedMaps.first;
           }
         case UserPreference.locale:
           final savedLocale = data != null ? data as String : "en";

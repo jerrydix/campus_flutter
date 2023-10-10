@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:campus_flutter/base/networking/protocols/main_api.dart';
+import 'package:campus_flutter/base/services/compatability_service.dart';
 import 'package:campus_flutter/loginComponent/viewModels/login_viewmodel.dart';
 import 'package:campus_flutter/loginComponent/views/confirm_view.dart';
 import 'package:campus_flutter/loginComponent/views/login_view.dart';
@@ -14,26 +17,32 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await _initApp();
+  runApp(const ProviderScope(child: CampusApp()));
+}
+
+_initApp() async {
+  getIt.registerSingleton<CompatabilityService>(CompatabilityService());
   getIt.registerSingleton<ConnectivityResult>(
       await Connectivity().checkConnectivity());
   getIt.registerSingleton<MapThemeService>(MapThemeService());
-  if (kIsWeb) {
+  if (getIt<CompatabilityService>().isWeb) {
     getIt.registerSingleton<MainApi>(MainApi.webCache());
   } else {
-    getIt
-        .registerSingleton<List<AvailableMap>>(await MapLauncher.installedMaps);
+    if (getIt<CompatabilityService>().isMobile) {
+      getIt.registerSingleton<List<AvailableMap>>(
+          await MapLauncher.installedMaps);
+    }
     final directory = await getTemporaryDirectory();
     HiveCacheStore(directory.path).clean();
     getIt.registerSingleton<MainApi>(
         MainApi.mobileCache(await getTemporaryDirectory()));
   }
-  runApp(const ProviderScope(child: CampusApp()));
 }
 
 class CampusApp extends ConsumerWidget {
