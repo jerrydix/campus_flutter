@@ -15,9 +15,9 @@
     "http": "https://github.com/flutter/packages/tree/main/packages/video_player/video_player_avfoundation"
   },
   "documentation_url": "https://pub.dev/packages/video_player",
-  "source_files": "Classes/**/*",
-  "public_header_files": "Classes/**/*.h",
+  "source_files": "Classes/*",
   "ios": {
+    "source_files": "Classes/ios/*",
     "dependencies": {
       "Flutter": [
 
@@ -25,12 +25,14 @@
     }
   },
   "osx": {
+    "source_files": "Classes/macos/*",
     "dependencies": {
       "FlutterMacOS": [
 
       ]
     }
   },
+  "public_header_files": "Classes/**/*.h",
   "platforms": {
     "ios": "11.0",
     "osx": "10.14"
