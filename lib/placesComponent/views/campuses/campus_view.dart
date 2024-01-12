@@ -13,6 +13,7 @@ import 'package:campus_flutter/placesComponent/views/campuses/campus_most_search
 import 'package:campus_flutter/placesComponent/views/homeWidget/study_room_widget_view.dart';
 import 'package:campus_flutter/placesComponent/views/map_widget.dart';
 import 'package:campus_flutter/base/extensions/context.dart';
+import 'package:campus_flutter/placesComponent/views/relaxation/relaxations_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -153,6 +154,30 @@ class _CampusViewState extends ConsumerState<CampusView> {
                     data: studyRooms,
                     tile: (studyRoomGroup) =>
                         StudyRoomWidgetView(studyRoomGroup),
+                  ),
+                ),
+              ),
+            if (widget.campus == Campus.stammgelaende)
+              WidgetFrameView(
+                title: context.localizations.more,
+                child: Card(
+                  child: ListTile(
+                    title: IconText(
+                      iconData: Icons.location_pin,
+                      iconColor: Colors.green,
+                      label: context.localizations.relaxationPlaces,
+                      leadingIcon: false,
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 15,
+                    ),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RelaxationsScaffold(),
+                      ),
+                    ),
                   ),
                 ),
               ),

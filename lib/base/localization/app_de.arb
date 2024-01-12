@@ -281,5 +281,7 @@
    "from":"Von",
    "to":"Bis",
    "timeFrame":"Zeitrahmen",
-   "delete":"Löschen"
+   "delete":"Löschen",
+   "relaxationPlaces":"Erholungsorte",
+   "more":"Mehr"
 }

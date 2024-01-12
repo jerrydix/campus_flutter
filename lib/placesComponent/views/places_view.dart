@@ -2,6 +2,7 @@ import 'package:campus_flutter/base/helpers/padded_divider.dart';
 import 'package:campus_flutter/placesComponent/viewModels/places_viewmodel.dart';
 import 'package:campus_flutter/placesComponent/views/cafeterias/cafeterias_view.dart';
 import 'package:campus_flutter/placesComponent/views/campuses/campus_card_view.dart';
+import 'package:campus_flutter/placesComponent/views/relaxation/relaxations_view.dart';
 import 'package:campus_flutter/placesComponent/views/studyGroups/study_rooms_view.dart';
 import 'package:campus_flutter/base/extensions/context.dart';
 import 'package:flutter/material.dart';
@@ -37,38 +38,7 @@ class PlacesView extends ConsumerWidget {
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: Card(
-                    margin: EdgeInsets.only(right: context.halfPadding),
-                    child: ListTile(
-                      leading: const Icon(Icons.school),
-                      title: Text(context.localizations.studyRooms),
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 15),
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const StudyRoomsScaffold(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Card(
-                    margin: EdgeInsets.only(left: context.halfPadding),
-                    child: ListTile(
-                      leading: const Icon(Icons.restaurant),
-                      title: Text(context.localizations.cafeterias),
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 15),
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const CafeteriasScaffold(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              children: _menuEntries(true, context),
             ),
           ),
         ),
@@ -101,34 +71,83 @@ class PlacesView extends ConsumerWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.school),
-              title: Text(context.localizations.studyRooms),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 15),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const StudyRoomsScaffold(),
-                ),
-              ),
-            ),
-          ),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.restaurant),
-              title: Text(context.localizations.cafeterias),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 15),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const CafeteriasScaffold(),
-                ),
-              ),
-            ),
-          ),
+          ..._menuEntries(false, context),
           const PaddedDivider(),
           for (var campus in ref.watch(placesViewModel).campuses)
             CampusCardView(campus: campus),
         ],
+      ),
+    );
+  }
+
+  List<Widget> _menuEntries(bool isLandscape, BuildContext context) => [
+        _menuCardWrapper(
+          context.localizations.studyRooms,
+          Icons.school,
+          const StudyRoomsScaffold(),
+          isLandscape,
+          context,
+        ),
+        _menuCardWrapper(
+          context.localizations.cafeterias,
+          Icons.restaurant,
+          const CafeteriasScaffold(),
+          isLandscape,
+          context,
+        ),
+        _menuCardWrapper(
+          "Relaxation Places",
+          Icons.weekend,
+          const RelaxationsScaffold(),
+          isLandscape,
+          context,
+        ),
+      ];
+
+  Widget _menuCardWrapper(
+    String title,
+    IconData iconData,
+    Widget destination,
+    bool isLandscape,
+    BuildContext context,
+  ) {
+    if (isLandscape) {
+      return Expanded(
+        child: _menuCard(
+          title,
+          iconData,
+          destination,
+          context,
+        ),
+      );
+    } else {
+      return _menuCard(
+        title,
+        iconData,
+        destination,
+        context,
+      );
+    }
+  }
+
+  Widget _menuCard(
+    String title,
+    IconData iconData,
+    Widget destination,
+    BuildContext context,
+  ) {
+    return Card(
+      child: Center(
+        child: ListTile(
+          leading: Icon(iconData),
+          title: Text(title),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 15),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => destination,
+            ),
+          ),
+        ),
       ),
     );
   }

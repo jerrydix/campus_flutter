@@ -281,5 +281,7 @@
    "from":"From",
    "to":"To",
    "timeFrame":"Time Frame",
-   "delete":"Delete"
+   "delete":"Delete",
+   "relaxationPlaces":"Relaxation Places",
+   "more":"More"
 }
